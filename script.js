@@ -430,19 +430,22 @@ async function deleteItem(id) {
 }
 
 // ===== LOAD FROM SERVER =====
+// ل شوێنا کو fetch('/api/projects') بکەی، ئەگەر تو بڕیار دکەی Supabase ل Front-end بکاربێنی:
 async function loadProjectsFromServer() {
-  try {
-    const response = await fetch('/api/projects');
-    if(!response.ok) throw new Error('Network error');
-    items = await response.json();
-    renderGrid();
-    const adminPanel = document.getElementById('admin-panel');
-    if (adminPanel && adminPanel.classList.contains('open')) {
-      renderManageTable();
+    try {
+        // لێرە تو دەشەی داواکارییەکەی خۆ بێرە ڕاستەوخۆ ب داتابێسێ ڤە گرێ بدەی
+        const response = await fetch('https://hvyvqkcnehwgimyezfjv.supabase.co/rest/v1/projects?select=*', {
+            headers: {
+                'apikey': 'AN_API_KEY_YAN_PUBLIC_ANON_KEY', // لێرە پابلیک کی یێ Supabase ددانەی
+                'Authorization': 'Bearer AN_API_KEY_YAN_PUBLIC_ANON_KEY'
+            }
+        });
+        const data = await response.json();
+        // پاشان داتا نیشان بدە
+        displayProjects(data);
+    } catch (err) {
+        console.error('خەتا د ئیناتا داتایان دا:', err);
     }
-  } catch (error) {
-    console.error("خەتا د ئینانا داتایان دا:", error);
-  }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
