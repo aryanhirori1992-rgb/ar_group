@@ -6,7 +6,6 @@ const { Pool } = require('pg');
 
 const app = express();
 
-// 1. گرێدانا داتابێسێ (پشتیوانییا DATABASE_URL دکەت کاتێک ل سەر Vercelـێ هەیە)
 const pool = new Pool(
   process.env.DATABASE_URL
     ? {
@@ -16,10 +15,10 @@ const pool = new Pool(
         }
       }
     : {
-        host: process.env.DB_HOST || 'aws-0-eu-central-1.pooler.supabase.com',
-        port: process.env.DB_PORT || 6543,
+        host: process.env.DB_HOST || 'db.hvyvqkcnehwgimyezfjv.supabase.co',
+        port: process.env.DB_PORT || 5432,
         database: process.env.DB_NAME || 'postgres',
-        user: process.env.DB_USER || 'postgres.hvyvqkcnehwgimyezfjv',
+        user: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || 'ARYAN77772007@',
         ssl: {
           rejectUnauthorized: false
