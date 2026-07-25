@@ -1,22 +1,31 @@
 const express = require('express');
 const multer  = require('multer');
 const path    = require('path');
-const sharp   = require('sharp'); // 💡 لێرە Sharp هاتیە زێدەکرن
+const sharp   = require('sharp');
 const { Pool } = require('pg');
 
 const app = express();
 
-// 1. گرێدانا داتابێسێ ب پارامێتەرێن ژینگەیی (Environment Variables)
-const pool = new Pool({
-  host: process.env.DB_HOST || 'aws-0-eu-central-1.pooler.supabase.com',
-  port: process.env.DB_PORT || 6543,
-  database: process.env.DB_NAME || 'postgres',
-  user: process.env.DB_USER || 'postgres.hvyvqkcnehwgimyezfjv',
-  password: process.env.DB_PASSWORD || 'ARYAN77772007@',
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+// 1. گرێدانا داتابێسێ (پشتیوانییا DATABASE_URL دکەت کاتێک ل سەر Vercelـێ هەیە)
+const pool = new Pool(
+  process.env.DATABASE_URL
+    ? {
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
+    : {
+        host: process.env.DB_HOST || 'aws-0-eu-central-1.pooler.supabase.com',
+        port: process.env.DB_PORT || 6543,
+        database: process.env.DB_NAME || 'postgres',
+        user: process.env.DB_USER || 'postgres.hvyvqkcnehwgimyezfjv',
+        password: process.env.DB_PASSWORD || 'ARYAN77772007@',
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
+);
 
 // 2. Middlewares
 app.use(express.json());
@@ -27,12 +36,23 @@ app.use(express.static('public'));
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// 4. Route-ا وەرگرتنا پڕۆژەیان (GET)
+// 4. Route-ا وەرگرتنا پڕۆژەیان (GET) و نیشاندانا index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// 5. Route-ا زێدەکرنا پڕۆژەی (POST) — بۆ Vercel (تۆمارکرنا بفر و وێنەی لە buffer)
+// Route-ا وەرگرتنا API یا پڕۆژەکان
+app.get('/api/projects', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM projects ORDER BY id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Fetch error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// 5. Route-ا زێدەکرنا پڕۆژەی (POST)
 app.post('/api/projects', upload.single('image'), async (req, res) => {
   try {
     const category = req.body.category || req.body.cat || '';
@@ -46,12 +66,11 @@ app.post('/api/projects', upload.single('image'), async (req, res) => {
     if (req.file) {
       const filename = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.webp';
       
-      // ل سەر Vercel فۆڵدەرا local ناهێتە خواندن، لێ بۆ پاراستنێ دەتوانین ب buffer بهێلین یان Base64
       const processedBuffer = await sharp(req.file.buffer)
         .webp({ quality: 85 })
         .toBuffer();
 
-      // لێرە دەتوانین ناڤی بینین (ئەگەر فایلەکی سێیەم وەک Cloudinary نەبێت، تەنێ ناڤی دەینە داتابێسێ)
+      // تێبینی: ئەگەر هێشتا وێنە نەهێنە پاشەکەوتکرن ل دەری، لێرە تەنها ناڤی دەینە داتابێسێ
       image_url = filename;
     }
 
@@ -92,5 +111,5 @@ app.delete('/api/projects/:id', async (req, res) => {
   }
 });
 
-// بۆ Vercel پێدڤییە ئەڤە بهێتە کرن ل شوێنا app.listen
+// بۆ Vercel
 module.exports = app;
