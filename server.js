@@ -28,14 +28,8 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // 4. Route-ا وەرگرتنا پڕۆژەیان (GET)
-app.get('/api/projects', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM projects ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Fetch error:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // 5. Route-ا زێدەکرنا پڕۆژەی (POST) — بۆ Vercel (تۆمارکرنا بفر و وێنەی لە buffer)
