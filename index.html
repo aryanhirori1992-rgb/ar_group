@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio |  AR Group</title>
+<style>
+    :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #18181f;
+    --card: #1c1c25;
+    --border: #2a2a38;
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --text: #f0f0f5;
+    --muted: #8888a8;
+    --sub: #555570;
+    --white: #ffffff;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --radius: 14px;
+    --rad-sm: 8px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top:0; width:100%; z-index:100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items:center; justify-content:space-between;
+    height: 64px;
+  }
+  .logo {
+    font-size: 1.3rem; font-weight: 700; color: var(--accent2);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--accent); }
+  .nav-links { display:flex; gap:0.5rem; }
+  .nav-links button {
+    background: none; border: none; cursor:pointer;
+    padding: 0.4rem 0.9rem; border-radius: 99px;
+    color: var(--muted); font-size: 0.85rem; transition: all .2s;
+  }
+  .nav-links button:hover, .nav-links button.active {
+    background: rgba(108,99,255,0.15); color: var(--accent2);
+  }
+  .nav-admin {
+    background: var(--accent) !important;
+    color: #fff !important; padding: 0.4rem 1rem !important;
+    border-radius: 99px !important;
+  }
+  .nav-admin:hover { opacity:0.85 !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding: 6rem 2rem 4rem;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,0.12) 0%, transparent 70%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236c63ff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events:none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items:center; gap:0.4rem;
+    background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.3);
+    color: var(--accent2); padding: 0.3rem 1rem; border-radius: 99px;
+    font-size: 0.8rem; margin-bottom: 1.5rem;
+  }
+  .hero-badge::before { content:'●'; font-size:0.5rem; color: var(--success); }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-weight: 800; line-height:1.1;
+    margin-bottom: 1rem; letter-spacing: -1px;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    background-clip: text; -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.1rem; color: var(--muted); max-width: 500px;
+    line-height: 1.7; margin-bottom: 2.5rem;
+  }
+  .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+  .btn-primary {
+    background: var(--accent); color:#fff;
+    padding: 0.75rem 2rem; border-radius: 99px;
+    border:none; cursor:pointer; font-size:0.95rem; font-weight:600;
+    transition: all .2s; text-decoration:none;
+  }
+  .btn-primary:hover { background: #7c74ff; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--accent2);
+    padding: 0.75rem 2rem; border-radius: 99px;
+    border: 1px solid rgba(108,99,255,0.4); cursor:pointer;
+    font-size:0.95rem; font-weight:600; transition: all .2s;
+  }
+  .btn-outline:hover { background: rgba(108,99,255,0.1); }
+  .hero-stats {
+    display:flex; gap:3rem; margin-top: 4rem; flex-wrap:wrap; justify-content:center;
+  }
+  .stat { text-align:center; }
+  .stat strong { display:block; font-size:2rem; font-weight:800; color:var(--accent2); }
+  .stat span { font-size:0.8rem; color:var(--muted); }
+
+  /* FILTER BAR */
+  .section { padding: 5rem 2rem; }
+  .section-title {
+    text-align:center; margin-bottom: 3rem;
+  }
+  .section-title h2 { font-size:1.8rem; font-weight:700; margin-bottom:0.5rem; }
+  .section-title p { color:var(--muted); font-size:0.9rem; }
+
+  .filter-bar {
+    display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap;
+    margin-bottom: 2.5rem;
+  }
+  .filter-btn {
+    padding: 0.5rem 1.2rem; border-radius: 99px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--muted); cursor:pointer; font-size:0.85rem; transition:all .2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent); border-color:var(--accent);
+    color:#fff; transform:translateY(-1px);
+  }
+
+  /* GRID */
+
+/* --- نەخشێ نوو یێ MASONRY GRID یێ دروست و سەنتەر --- */
+
+/* --- 🎯 سیستەمی MASONRY ئاسۆیی و ڕێکخستنی بۆشاییەکان --- */
+.portfolio-grid {
+  display: grid;
+  /* دروستکردنی ستوونی جێگیر بە پانایی 280px کە دەکەوێتە سەنتەر */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 280px));
+  /* دابەشکردنی خوارەوە بۆ ڕیزی زۆر بچووک (5px) بۆ ئەوەی کارتەکان بە جوانی تێکەڵ ببن */
+  grid-auto-rows: 5px;
+  justify-content: center;
+  gap: 0 1.5rem; /* بۆشایی تەنها لە نێوان لایەکان، خوار و سەر بە JS ڕێکدەخرێت */
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  min-height: 200px;
+}
+
+.card {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all .3s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+  /* ڕێگری لە دروستبوونی کێشە پێش لۆدبوونی JS */
+  grid-row-end: span 40; 
+}
+/* ڕێکخستنا بلندییا وێنەیێن درێژ */
+.img-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform .4s;
+}
+
+/* تایبەت بۆ کارێن وێبسایت: قیاسەکێ پان و جێگیر یێ ئاسۆیی */
+.website-card .img-wrap { 
+  aspect-ratio: 16/10; 
+}
+.website-card .img-wrap img { 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(108,99,255,0.4);
+  box-shadow: 0 20px 40px rgba(108,99,255,0.1);
+}
+  /* ASPECT RATIO HANDLING */
+  .img-wrap {
+  position: relative;
+  width: 100%;
+  background: var(--bg3);
+  overflow: hidden;
+}
+
+/* لێرە وێنە بلندییا خۆ یا ئەسڵی دگریت (بۆ لۆگۆ و گرافیکان) */
+.img-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform .4s;
+}
+
+/* 🌐 تایبەت بۆ وێبسایتان: قیاسێ وێبسایتی دێ جێگیر و ئاسۆیی بیت */
+.website-card .img-wrap { 
+  aspect-ratio: 16/10; 
+}
+.website-card .img-wrap img { 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+/* بۆ شاشەیێن موبایلێ و تابلێتێ دا کو ستوون کێم ببن */
+/* ========================================================
+   📱 پشکا مێدیا کوێری یێن نوو بۆ شاشەیێن جودا (چاککراو)
+   ======================================================== */
+
+/* 💻 بۆ شاشەیێن مامناوەند و تابلێت (وەک iPad) */
+/* 💻 بۆ شاشەیێن مامناوەند و تابلێت */
+@media (max-width: 1024px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0 1rem;
+  }
+}
+
+/* 📱 تایبەت بۆ شاشەیێن موبایلێ (ژ 640px کێمتر) - هێشتنا Masonry ب دوو ستوونی */
+@media (max-width: 640px) {
+  .portfolio-grid {
+    display: grid !important; /* دڵنیابوونەوە لەوەی مۆبایل هێشتا Gridە */
+    /* 💡 لێرە دکەینە دوو ستوونی جێگیر بە قەبارەی 1fr بۆ ئەوەی بە تەواوی شاشە بگرن */
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 0 0.8rem !important; /* کێمەک بۆشایی ل ناوان بۆ مۆبایل */
+    padding: 0 0.5rem;
+    max-width: 100% !important;
+  }
+
+  .card {
+    width: 100% !important;
+  }
+}
+
+
+  .card:hover .img-wrap img { transform: scale(1.04); }
+  .img-placeholder {
+    width:100%; height:100%; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    color: var(--sub); gap:0.5rem;
+  }
+  .img-placeholder svg { width:40px; height:40px; opacity:0.5; }
+
+  .card-info { padding: 1rem 1.1rem 1.1rem; }
+  .card-cat {
+    display:inline-block; font-size:0.7rem; font-weight:600; letter-spacing:0.5px;
+    padding: 0.2rem 0.6rem; border-radius:99px; margin-bottom:0.5rem;
+    text-transform:uppercase;
+  }
+  .cat-website { background:rgba(99,179,237,0.15); color:#63b3ed; }
+  .cat-graphic { background:rgba(246,173,85,0.15); color:#f6ad55; }
+  .cat-logo { background:rgba(154,230,180,0.15); color:#9ae6b4; }
+  .cat-excel { background:rgba(108,99,255,0.15); color:var(--accent2); }
+  .cat-pos { background:rgba(252,129,74,0.15); color:#fc814a; }
+
+  .card-info h3 { font-size:0.95rem; font-weight:600; margin-bottom:0.3rem; }
+  .card-info p { font-size:0.8rem; color:var(--muted); line-height:1.5; }
+
+  /* WEBSITE CARD SPECIAL */
+  .website-card .img-wrap { position:relative; }
+  .website-overlay {
+    position:absolute; inset:0;
+    background: rgba(10,10,15,0.0);
+    transition: all .3s;
+    display:flex; align-items:flex-end;
+  }
+  .card:hover .website-overlay {
+    background: rgba(10,10,15,0.5);
+  }
+  .website-actions {
+    width:100%; padding:1rem; display:flex; gap:0.5rem;
+    opacity:0; transform:translateY(8px); transition:all .3s;
+  }
+  .card:hover .website-actions { opacity:1; transform:translateY(0); }
+  .wa-btn {
+    flex:1; padding:0.45rem; background:rgba(255,255,255,0.95);
+    color:#111; border:none; border-radius:8px; cursor:pointer;
+    font-size:0.78rem; font-weight:600; transition:all .2s;
+    display:flex; align-items:center; justify-content:center; gap:0.3rem;
+  }
+  .wa-btn:hover { background:#fff; }
+
+  /* LIGHTBOX */
+  .lightbox {
+    position:fixed; inset:0; z-index:999;
+    background:rgba(0,0,0,0.92); backdrop-filter:blur(8px);
+    display:none; align-items:center; justify-content:center;
+    padding: 1.5rem;
+  }
+  .lightbox.open { display:flex; }
+  .lightbox-inner {
+    position:relative; max-width:900px; width:100%; max-height:90vh;
+    background:var(--card); border-radius:var(--radius);
+    border:1px solid var(--border); overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .lightbox-header {
+    padding:1rem 1.25rem; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    flex-shrink:0;
+  }
+  .lightbox-header h3 { font-size:1rem; font-weight:600; }
+  .lightbox-close {
+    width:32px; height:32px; border-radius:50%;
+    background:var(--bg3); border:1px solid var(--border);
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:1.2rem; transition:all .2s;
+  }
+  .lightbox-close:hover { background:var(--danger); color:#fff; }
+  .lightbox-body { flex:1; overflow:auto; padding:1.25rem; display:flex; flex-direction:column; gap:1rem; }
+  .lightbox-img-wrap { background:var(--bg3); border-radius:10px; overflow:hidden; }
+  .lightbox-img-wrap img { width:100%; display:block; }
+  .lightbox-meta { display:flex; flex-direction:column; gap:0.5rem; }
+  .lb-desc { font-size:0.9rem; color:var(--muted); line-height:1.6; }
+  .lb-visit {
+    display:inline-flex; align-items:center; gap:0.4rem;
+    background:var(--accent); color:#fff; padding:0.5rem 1.2rem;
+    border-radius:99px; text-decoration:none; font-size:0.85rem; font-weight:600;
+    border:none; cursor:pointer; transition:all .2s; width:fit-content;
+  }
+  .lb-visit:hover { background:#7c74ff; }
+
+  /* ADMIN */
+  #admin-panel {
+    display:none; position:fixed; inset:0; z-index:500;
+    background:var(--bg2); overflow:auto;
+  }
+  #admin-panel.open { display:block; }
+  .admin-nav {
+    background:var(--bg3); border-bottom:1px solid var(--border);
+    padding:1rem 2rem; display:flex; align-items:center; justify-content:space-between;
+  }
+  .admin-nav h2 { font-size:1.1rem; font-weight:700; }
+  .admin-layout {
+    display:grid; grid-template-columns: 220px 1fr; min-height:calc(100vh - 65px);
+  }
+  .admin-sidebar {
+    background:var(--bg3); border-left:1px solid var(--border); padding:1.5rem 0;
+  }
+  .admin-sidebar-title {
+    font-size:0.7rem; font-weight:700; letter-spacing:1px; color:var(--sub);
+    padding: 0 1.25rem 0.75rem; text-transform:uppercase;
+  }
+  .sb-btn {
+    width:100%; padding:0.65rem 1.25rem; background:none; border:none;
+    cursor:pointer; text-align:right; color:var(--muted); font-size:0.9rem;
+    display:flex; align-items:center; gap:0.6rem; transition:all .2s;
+  }
+  .sb-btn:hover, .sb-btn.active { background:rgba(108,99,255,0.1); color:var(--accent2); }
+  .sb-btn .sb-icon { width:18px; height:18px; flex-shrink:0; }
+  .admin-main { padding: 2rem; }
+  .admin-section { display:none; }
+  .admin-section.active { display:block; }
+
+  /* UPLOAD FORM */
+  .upload-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:1.75rem; max-width:600px;
+  }
+  .upload-card h3 { font-size:1rem; font-weight:600; margin-bottom:1.5rem; }
+  .form-group { margin-bottom:1.1rem; }
+  .form-group label {
+    display:block; font-size:0.82rem; color:var(--muted); margin-bottom:0.4rem;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width:100%; background:var(--bg3); border:1px solid var(--border);
+    border-radius:var(--rad-sm); color:var(--text); padding:0.65rem 0.85rem;
+    font-size:0.9rem; transition:border-color .2s; outline:none;
+    font-family:inherit; direction:rtl;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color:var(--accent);
+  }
+  .form-group select option { background:var(--bg3); }
+  .form-group textarea { min-height:80px; resize:vertical; }
+
+  .drop-zone {
+    width:100%; background:var(--bg3); border:2px dashed var(--border);
+    border-radius:var(--rad-sm); padding:2rem; text-align:center;
+    cursor:pointer; transition:all .2s; position:relative;
+  }
+  .drop-zone:hover, .drop-zone.drag { border-color:var(--accent); background:rgba(108,99,255,0.05); }
+  .drop-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .drop-icon { font-size:2rem; margin-bottom:0.5rem; }
+  .drop-zone p { color:var(--muted); font-size:0.85rem; }
+  .drop-zone span { color:var(--accent2); font-size:0.82rem; }
+  .preview-img { max-width:100%; max-height:200px; border-radius:8px; margin-top:1rem; display:none; }
+
+  .url-group { margin-top:0.75rem; }
+  .website-url-field { display:none; }
+
+  .btn-submit {
+    background:var(--accent); color:#fff; padding:0.7rem 2rem;
+    border-radius:99px; border:none; cursor:pointer; font-size:0.9rem; font-weight:600;
+    transition:all .2s; margin-top:0.5rem;
+  }
+  .btn-submit:hover { background:#7c74ff; }
+  .btn-submit:disabled { opacity:0.5; cursor:not-allowed; }
+
+  /* ADMIN ITEMS TABLE */
+  .admin-table-wrap { overflow-x:auto; }
+  .admin-table { width:100%; border-collapse:collapse; }
+  .admin-table th {
+    text-align:right; padding:0.75rem 1rem; font-size:0.78rem;
+    color:var(--muted); font-weight:600; border-bottom:1px solid var(--border);
+    text-transform:uppercase; letter-spacing:0.5px;
+  }
+  .admin-table td { padding:0.9rem 1rem; border-bottom:1px solid rgba(42,42,56,0.5); font-size:0.88rem; }
+  .admin-table tr:hover td { background:rgba(108,99,255,0.04); }
+  .table-thumb { width:48px; height:36px; border-radius:6px; object-fit:cover; background:var(--bg3); }
+  .del-btn {
+    background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2);
+    color:var(--danger); padding:0.3rem 0.7rem; border-radius:6px; cursor:pointer;
+    font-size:0.78rem; transition:all .2s;
+  }
+  .del-btn:hover { background:var(--danger); color:#fff; }
+
+  /* LOGIN */
+  #login-screen {
+    position:fixed; inset:0; z-index:999;
+    background:rgba(0,0,0,0.95); backdrop-filter:blur(12px);
+    display:none; align-items:center; justify-content:center;
+  }
+  #login-screen.open { display:flex; }
+  .login-box {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:2.5rem; width:360px; max-width:95vw;
+    text-align:center;
+  }
+  .login-box h2 { font-size:1.3rem; margin-bottom:0.4rem; }
+  .login-box p { color:var(--muted); font-size:0.85rem; margin-bottom:2rem; }
+  .login-input {
+    width:100%; background:var(--bg3); border:1px solid var(--border);
+    border-radius:var(--rad-sm); color:var(--text); padding:0.7rem 1rem;
+    font-size:0.9rem; outline:none; margin-bottom:0.75rem; direction:ltr;
+    text-align:center; transition:border-color .2s; font-family:inherit;
+  }
+  .login-input:focus { border-color:var(--accent); }
+  .login-btn {
+    width:100%; background:var(--accent); color:#fff; padding:0.75rem;
+    border:none; border-radius:99px; cursor:pointer; font-size:0.95rem;
+    font-weight:600; transition:all .2s; margin-bottom:0.75rem;
+  }
+  .login-btn:hover { background:#7c74ff; }
+  .login-cancel {
+    width:100%; background:none; border:none; color:var(--muted);
+    cursor:pointer; font-size:0.85rem; transition:color .2s;
+  }
+  .login-cancel:hover { color:var(--text); }
+  .login-err {
+    background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2);
+    color:var(--danger); padding:0.6rem; border-radius:8px;
+    font-size:0.82rem; margin-bottom:0.75rem; display:none;
+  }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:2rem; right:2rem; z-index:9999;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--rad-sm); padding:0.8rem 1.25rem;
+    font-size:0.88rem; transform:translateX(200px); opacity:0;
+    transition:all .3s; max-width:300px; display:flex; gap:0.6rem; align-items:center;
+  }
+  .toast.show { transform:translateX(0); opacity:1; }
+  .toast.success { border-color:rgba(34,197,94,0.3); }
+  .toast.success::before { content:'✓'; color:var(--success); font-weight:700; }
+  .toast.error { border-color:rgba(239,68,68,0.3); }
+  .toast.error::before { content:'✗'; color:var(--danger); font-weight:700; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    grid-column:1/-1; text-align:center; padding:4rem 1rem;
+    color:var(--muted);
+  }
+  .empty-state svg { margin:0 auto 1rem; opacity:0.3; display:block; }
+  .empty-state p { font-size:0.9rem; }
+
+  /* FOOTER */
+  footer {
+    background:var(--bg3); border-top:1px solid var(--border);
+    padding:2rem; text-align:center; color:var(--sub); font-size:0.82rem;
+  }
+
+
+</style>
+</head>
+<body>
+
+
+
+<!-- NAV -->
+<nav>
+  <div class="logo">AR<span> Group</span></div>
+  <div class="nav-links">
+    <button onclick="scrollToWork()" class="active">کارێن مە</button>
+    <button onclick="scrollToAbout()">دەربارەی مە</button>
+    <button onclick="openAdminLogin()" class="nav-admin">ئەدمین</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-badge">خزمەتگوزاریا پرۆفیشناڵ</div>
+  <h1>دیزاین و <span>دیجیتاڵ</span><br>بۆ بازنەیێ تە</h1>
+  <p>تیمەکا خودان شارەزایی بۆ چێکرنا وێبسایت، گرافیک، لۆگۆ، ئەکسل (Excel) و سیستەمێ فرۆشتنێ (POS) — هەمی تشت د بن ئێک سەربان دا.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="scrollToWork()">نموونەیێن کارێن مە ببینە</button>
+    <button class="btn-outline" onclick="scrollToAbout()">دەربارەی تیمێ</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><strong id="stat-count">0</strong><span>پڕۆژەیێن ب دوماهی هاتین</span></div>
+    <div class="stat"><strong>5</strong><span>خزمەتگوزاریێن جودا</span></div>
+    <div class="stat"><strong>100%</strong><span>ڕازیبوونا کڕیاری</span></div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="section" id="portfolio">
+  <div class="section-title">
+    <h2>نموونەیێن کارێن مە</h2>
+    <p>پشکەک ژ پڕۆژەیێن مە یێن ب دوماهی هاتین</p>
+  </div>
+
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" onclick="filterItems('all', this)">هەمی</button>
+    <button class="filter-btn" onclick="filterItems('website', this)">🌐 وێبسایت</button>
+    <button class="filter-btn" onclick="filterItems('graphic', this)">🎨 گرافیک دیزاین</button>
+    <button class="filter-btn" onclick="filterItems('logo', this)">✏️ لۆگۆ</button>
+    <button class="filter-btn" onclick="filterItems('excel', this)">📊 ئەکسل (Excel)</button>
+    <button class="filter-btn" onclick="filterItems('pos', this)">🖥️ سیستەمێ POS</button>
+  </div>
+
+  <div class="portfolio-grid" id="portfolio-grid">
+    <!-- JS renders here -->
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about" style="background:var(--bg2);">
+  <div style="max-width:700px; margin:0 auto; text-align:center;">
+    <h2 style="font-size:1.8rem; font-weight:700; margin-bottom:1rem;">دەربارەی AR Group</h2>
+    <p style="color:var(--muted); line-height:1.9; font-size:0.95rem; margin-bottom:2rem;">
+      AR  Group  ب تایبەتمەندیێن گەلەک بلند خزمەتگوزاریێن دیجیتاڵی پێشکەش دکەت. ژ چێکرنا وێبسایتان و گرافیک دیزاینی تا سیستەمێ POS و Excel، ئەم ئامادەین پڕۆژەیێ تە ب شێوازەکێ پیشەیی و خێرا بەرەڤ پێش ببەین.</p>
+    <div style="display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap;">
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 2rem; text-align:center;">
+        <div style="font-size:1.5rem; margin-bottom:0.4rem;">🌐</div>
+        <div style="font-weight:600; font-size:0.9rem;">وێبسایت</div>
+        <div style="color:var(--muted); font-size:0.78rem; margin-top:0.2rem;">دروستکردن و دیزاین</div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 2rem; text-align:center;">
+        <div style="font-size:1.5rem; margin-bottom:0.4rem;">🎨</div>
+        <div style="font-weight:600; font-size:0.9rem;">گرافیک</div>
+        <div style="color:var(--muted); font-size:0.78rem; margin-top:0.2rem;">پوستەر، بانەر، پاکێج</div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 2rem; text-align:center;">
+        <div style="font-size:1.5rem; margin-bottom:0.4rem;">✏️</div>
+        <div style="font-weight:600; font-size:0.9rem;">لۆگۆ</div>
+        <div style="color:var(--muted); font-size:0.78rem; margin-top:0.2rem;">ئایدێنتیتی براند</div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 2rem; text-align:center;">
+        <div style="font-size:1.5rem; margin-bottom:0.4rem;">📊</div>
+        <div style="font-weight:600; font-size:0.9rem;">Excel</div>
+        <div style="color:var(--muted); font-size:0.78rem; margin-top:0.2rem;">تەبلە و ئەنجوومان</div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 2rem; text-align:center;">
+        <div style="font-size:1.5rem; margin-bottom:0.4rem;">🖥️</div>
+        <div style="font-weight:600; font-size:0.9rem;">POS سیستەم</div>
+        <div style="color:var(--muted); font-size:0.78rem; margin-top:0.2rem;">سیستەمی فرۆشتن</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 AR-Group  · هەمی ماف د پاراستینە</p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightboxOnBg(event)">
+  <div class="lightbox-inner">
+    <div class="lightbox-header">
+      <div>
+        <span class="card-cat" id="lb-cat-badge"></span>
+        <h3 id="lb-title"></h3>
+      </div>
+      <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    </div>
+    <div class="lightbox-body">
+      <div class="lightbox-img-wrap" id="lb-img-wrap"></div>
+      <div class="lightbox-meta">
+        <p class="lb-desc" id="lb-desc"></p>
+        <a class="lb-visit" id="lb-visit" style="display:none" target="_blank">🔗 سەرەدانا وێبسایتی بکە</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h2>چوونەژۆرا ئەدمینی</h2>
+    <p>تکایە ناڤ و پاسوۆردێ ئەدمینی بنڤێسه</p>
+    <div class="login-err" id="login-err">ناڤ یان پاسوۆرد شاشە</div>
+    <input class="login-input" id="login-user" type="text" placeholder="ناڤێ بەکارهێنەری" autocomplete="username">
+    <input class="login-input" id="login-pass" type="password" placeholder="پاسوۆرد" autocomplete="current-password">
+    <button class="login-btn" onclick="doLogin()">چوونەژۆر</button>
+    <button class="login-cancel" onclick="closeAdminLogin()">زڤڕین</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="admin-nav">
+    <h2>⚙️ پانێلا ئەدمینی</h2>
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <span style="color:var(--muted);font-size:0.82rem;">بخێر بێی، ئەدمین</span>
+      <button onclick="closeAdmin()" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--danger);padding:0.4rem 0.9rem;border-radius:99px;cursor:pointer;font-size:0.82rem;">دەرکەفتن</button>
+    </div>
+  </div>
+
+  <div class="admin-layout">
+    <div class="admin-sidebar">
+      <div class="admin-sidebar-title">مێنیو</div>
+      <button class="sb-btn active" onclick="showAdminSection('add', this)">
+        <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        زێدەکرنا نموونەیێ
+      </button>
+      <button class="sb-btn" onclick="showAdminSection('manage', this)">
+        <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        بڕێڤەبرنا نموونەیان
+      </button>
+    </div>
+
+    <div class="admin-main">
+      <!-- ADD SECTION -->
+      <div class="admin-section active" id="sec-add">
+        <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:1.5rem;">زێدەکرنا نموونەکا نوو</h2>
+        <div class="upload-card">
+          <div class="form-group">
+            <label>کاتیگۆری *</label>
+            <select id="f-cat" onchange="onCatChange()">
+              <option value="">کاتیگۆریەکێ هەلبژێره</option>
+              <option value="website">🌐 وێبسایت</option>
+              <option value="graphic">🎨 گرافیک دیزاین</option>
+              <option value="logo">✏️ لۆگۆ</option>
+              <option value="excel">📊 ئەکسل (Excel)</option>
+              <option value="pos">🖥️ سیستەمێ POS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ناڤێ پڕۆژەی *</label>
+            <input type="text" id="f-title" placeholder="ناڤێ پڕۆژەیی" required />
+          </div>
+          <div class="form-group">
+            <label>تێبینی / وەسفکرن</label>
+            <textarea id="f-desc" placeholder="دەربارەی پڕۆژەیی"></textarea>
+          </div>
+
+          <!-- WEBSITE URL FIELD -->
+          <div class="form-group website-url-field" id="url-field">
+            <label>لینکا وێبسایتی</label>
+            <input type="url" id="f-url" placeholder="https://example.com" dir="ltr">
+          </div>
+
+          <!-- IMAGE UPLOAD -->
+          <div class="form-group">
+  <label>* وێنێ نموونەیێ</label>
+  <div class="drop-zone" id="drop-zone" onclick="document.getElementById('f-img').click()">
+    <input type="file" id="f-img" accept="image/*,video/*" onchange="onImgSelect(event)" style="display: none;">
+    <div class="drop-icon">📷</div>
+    <p>وێنەی ڕابکێشە ئێرە یان ل سەر کلیک بکه</p>
+    <span id="img-hint">PNG, JPG, WEBP — مەزنترین قەبارە 20MB</span>
+    <img class="preview-img" id="img-preview" src="" style="display: none; max-width: 100%; max-height: 150px; border-radius: 8px; margin-top: 0.5rem;" />
+  </div>
+</div>
+
+          <div class="form-group" id="ratio-field" style="display:none;">
+            <label>قیاسێ وێنەی</label>
+            <select id="f-cat">
+              <option value="auto">ئۆتۆماتیک (ل سەر دویڤ وێنەی)</option>
+              <option value="1/1">چوارگۆشە ١:١</option>
+              <option value="9/16">ستوونی (عمودی) ٩:١٦</option>
+              <option value="16/9">ئۆفۆقی (ئاسۆیی) ١٦:٩</option>
+            </select>
+          </div>
+
+          <button type="button" onclick="submitItem(event)" class="btn-primary">
+  ✓ زێدەکرن بۆ پۆرتفۆلیۆیێ
+</button>
+        </div>
+      </div>
+
+      <!-- MANAGE SECTION -->
+      <div class="admin-section" id="sec-manage">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+          <h2 style="font-size:1.1rem; font-weight:700;">هەمی نموونە</h2>
+          <span style="color:var(--muted); font-size:0.85rem;" id="item-count-label"></span>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>وێنە</th>
+                <th>ناڤ</th>
+                <th>کاتیگۆری</th>
+                <th>وەسفکرن</th>
+                <th>کردار</th>
+              </tr>
+            </thead>
+            <tbody id="manage-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+
+<script src="script.js"></script>
+</body>
+</html>
