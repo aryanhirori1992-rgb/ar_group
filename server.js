@@ -5,15 +5,13 @@ const sharp   = require('sharp'); // 💡 لێرە Sharp هاتیە زێدەکر
 const { Pool } = require('pg');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// 1. گرێدانا داتابێسێ
-// گرێدانا داتابێسێ ب پارامێتەرێن جودا
+// 1. گرێدانا داتابێسێ ب پارامێتەرێن ژینگەیی (Environment Variables)
 const pool = new Pool({
-  host: process.env.DB_HOST || 'aws-0-eu-central-1.pooler.supabase.com', // یان ئەو هۆستەی د Pooler دا هەیە
-  port: process.env.DB_PORT || 6543, // د Pooler دا پۆرت 6543 بکاردهێت ل شوێنا 5432
+  host: process.env.DB_HOST || 'aws-0-eu-central-1.pooler.supabase.com',
+  port: process.env.DB_PORT || 6543,
   database: process.env.DB_NAME || 'postgres',
-  user: process.env.DB_USER || 'postgres.hvyvqkcnehwgimyezfjv', // د Pooler دا ناڤێ user ب ڤی شێوەیێ درێژە
+  user: process.env.DB_USER || 'postgres.hvyvqkcnehwgimyezfjv',
   password: process.env.DB_PASSWORD || 'ARYAN77772007@',
   ssl: {
     rejectUnauthorized: false
@@ -24,9 +22,8 @@ const pool = new Pool({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
 
-// 3. ڕێکخستنا Multer بۆ گرتنا فایلی د Memory (RAM) دا تا Sharp بیگۆڕێت
+// 3. ڕێکخستنا Multer بۆ گرتنا فایلی د Memory (RAM) دا
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -41,7 +38,7 @@ app.get('/api/projects', async (req, res) => {
   }
 });
 
-// 5. Route-ا زێدەکرنا پڕۆژەی (POST) — ب فۆرماتا ئۆتۆماتیک .webp
+// 5. Route-ا زێدەکرنا پڕۆژەی (POST) — بۆ Vercel (تۆمارکرنا بفر و وێنەی لە buffer)
 app.post('/api/projects', upload.single('image'), async (req, res) => {
   try {
     const category = req.body.category || req.body.cat || '';
@@ -51,15 +48,16 @@ app.post('/api/projects', upload.single('image'), async (req, res) => {
     
     let image_url = null;
 
-    // ئەگەر فایل هاتبێتە هەڵبژاردن، Sharp ڕاستەوخۆ دەیکاتە .webp
+    // ئەگەر فایل هاتبێتە هەڵبژاردن، Sharp ل سەر RAM دەیکاتە .webp
     if (req.file) {
       const filename = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.webp';
-      const outputPath = path.join(__dirname, 'uploads', filename);
+      
+      // ل سەر Vercel فۆڵدەرا local ناهێتە خواندن، لێ بۆ پاراستنێ دەتوانین ب buffer بهێلین یان Base64
+      const processedBuffer = await sharp(req.file.buffer)
+        .webp({ quality: 85 })
+        .toBuffer();
 
-      await sharp(req.file.buffer)
-        .webp({ quality: 85 }) // ڕێژەی کوالیتیێ (85٪ کوالیتییا بەرز و قەبارەی بچووک)
-        .toFile(outputPath);
-
+      // لێرە دەتوانین ناڤی بینین (ئەگەر فایلەکی سێیەم وەک Cloudinary نەبێت، تەنێ ناڤی دەینە داتابێسێ)
       image_url = filename;
     }
 
@@ -76,7 +74,7 @@ app.post('/api/projects', upload.single('image'), async (req, res) => {
 
     const result = await pool.query(queryText, values);
 
-    console.log("Image converted to WEBP and saved successfully!");
+    console.log("Image processed and project added successfully!");
     return res.status(200).json({ 
       success: true, 
       project: result.rows[0] 
@@ -100,7 +98,5 @@ app.delete('/api/projects/:id', async (req, res) => {
   }
 });
 
-// 7. دەستپێکرنا سێرڤەری
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// بۆ Vercel پێدڤییە ئەڤە بهێتە کرن ل شوێنا app.listen
+module.exports = app;
