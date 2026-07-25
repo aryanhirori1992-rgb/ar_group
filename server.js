@@ -38,7 +38,7 @@ const upload = multer({ storage: storage });
 
 // 4. Route-ا وەرگرتنا پڕۆژەیان (GET) و نیشاندانا index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html', 'script.js'));
 });
 
 // Route-ا وەرگرتنا API یا پڕۆژەکان
