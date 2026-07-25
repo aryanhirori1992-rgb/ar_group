@@ -6,6 +6,7 @@ const { Pool } = require('pg');
 
 const app = express();
 
+// 1. گرێدانا داتابێسێ
 const pool = new Pool(
   process.env.DATABASE_URL
     ? {
@@ -29,15 +30,15 @@ const pool = new Pool(
 // 2. Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname)));
 
 // 3. ڕێکخستنا Multer بۆ گرتنا فایلی د Memory (RAM) دا
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// 4. Route-ا وەرگرتنا پڕۆژەیان (GET) و نیشاندانا index.html
+// 4. Route-ا سەرەکی بۆ نیشاندانا index.html (Frontend)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html', 'script.js'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Route-ا وەرگرتنا API یا پڕۆژەکان
@@ -61,7 +62,6 @@ app.post('/api/projects', upload.single('image'), async (req, res) => {
     
     let image_url = null;
 
-    // ئەگەر فایل هاتبێتە هەڵبژاردن، Sharp ل سەر RAM دەیکاتە .webp
     if (req.file) {
       const filename = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.webp';
       
@@ -69,7 +69,6 @@ app.post('/api/projects', upload.single('image'), async (req, res) => {
         .webp({ quality: 85 })
         .toBuffer();
 
-      // تێبینی: ئەگەر هێشتا وێنە نەهێنە پاشەکەوتکرن ل دەری، لێرە تەنها ناڤی دەینە داتابێسێ
       image_url = filename;
     }
 
@@ -86,7 +85,6 @@ app.post('/api/projects', upload.single('image'), async (req, res) => {
 
     const result = await pool.query(queryText, values);
 
-    console.log("Image processed and project added successfully!");
     return res.status(200).json({ 
       success: true, 
       project: result.rows[0] 
@@ -110,5 +108,4 @@ app.delete('/api/projects/:id', async (req, res) => {
   }
 });
 
-// بۆ Vercel
 module.exports = app;
