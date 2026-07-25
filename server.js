@@ -36,11 +36,9 @@ app.use(express.static(path.join(__dirname)));
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// 4. Route-ا سەرەکی بۆ نیشاندانا index.html (Frontend)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.resolve(__dirname, 'index.html'));
 });
-
 // Route-ا وەرگرتنا API یا پڕۆژەکان
 app.get('/api/projects', async (req, res) => {
   try {
