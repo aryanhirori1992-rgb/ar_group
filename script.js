@@ -430,24 +430,34 @@ async function deleteItem(id) {
 }
 
 // ===== LOAD FROM SERVER =====
-async function loadProjectsFromServer() {
+// وەرگرتنا پڕۆژەکان ژ سێرڤەری و نیشاندانا وان ل سەر ماڵپەڕی
+async function loadProjects() {
   try {
     const response = await fetch('/api/projects');
-    if(!response.ok) throw new Error('Network error');
-    items = await response.json();
-    renderGrid();
-    const adminPanel = document.getElementById('admin-panel');
-    if (adminPanel && adminPanel.classList.contains('open')) {
-      renderManageTable();
+    const projects = await response.json();
+    
+    console.log("Projects data:", projects);
+    
+    // لێرە دەتوانیت داتایان بخەیتە ناو HTMLـێ خۆ (بۆ نموونە بە DOM manipulation)
+    const container = document.getElementById('projects-container');
+    if (container) {
+      container.innerHTML = '';
+      projects.forEach(project => {
+        container.innerHTML += `
+          <div class="project-card">
+            <h3>${project.title || 'Project'}</h3>
+            <p>${project.description || ''}</p>
+          </div>
+        `;
+      });
     }
-  } catch (error) {
-    console.error("خەتا د ئینانا داتایان دا:", error);
+  } catch (err) {
+    console.error('Error loading projects:', err);
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  loadProjectsFromServer();
-});
+// بانگکرنا فەنکشنێ دەمێ ماڵپەڕ بار دبت
+window.addEventListener('DOMContentLoaded', loadProjects);
 
 // ===== TOAST =====
 let toastTimeout;
